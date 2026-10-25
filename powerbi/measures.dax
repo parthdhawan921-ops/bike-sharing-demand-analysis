@@ -1,0 +1,71 @@
+// DAX measures and calculated columns from bike_project_powerbi.pbix
+
+// ---- Measures: trips ----
+Total Trips        = COUNTROWS ( trips_data )
+Total Users        = DISTINCTCOUNT ( users_data[User_ID] )
+Total Distance KM  = SUM ( trips_data[Distance_KM] )
+Avg Trip Duration  = AVERAGE ( trips_data[Trip_Duration_Min] )
+Fare Revenue       = SUM ( revenue_data[Total_Fare] )
+
+Peak Hour Trips =
+    MAXX ( VALUES ( trips_data[Hour] ), [Total Trips] )
+
+Peak Hour =
+    VAR HourTable =
+        ADDCOLUMNS ( VALUES ( trips_data[Hour] ), "TripsAtHour", [Total Trips] )
+    RETURN
+        MAXX ( TOPN ( 1, HourTable, [TripsAtHour], DESC, trips_data[Hour], ASC ), trips_data[Hour] )
+
+// ---- Measures: stations ----
+Station Departures = COUNTROWS ( trips_data )   // via the active Start_Station_ID relationship
+
+Total end arrival =
+    CALCULATE (
+        COUNTROWS ( trips_data ),
+        USERELATIONSHIP ( stations_data[Station_ID], trips_data[End_Station_ID] )
+    )
+
+Peak Off Peak =
+    IF (
+        SELECTEDVALUE ( trips_data[Hour] ) >= 7 && SELECTEDVALUE ( trips_data[Hour] ) <= 9
+            || SELECTEDVALUE ( trips_data[Hour] ) >= 17 && SELECTEDVALUE ( trips_data[Hour] ) <= 19,
+        "Peak",
+        "Off-Peak"
+    )
+
+// ---- Measures: maintenance ----
+Maintenance Records  = COUNTROWS ( maintenance_data )
+Total Downtime Hours = SUM ( maintenance_data[Downtime_Hours] )
+
+// ---- Calculated columns ----
+trips_data[Hour]       = HOUR ( trips_data[Start_Time] )
+trips_data[Day Type]   = IF ( WEEKDAY ( trips_data[Start_Time], 2 ) <= 5, "Weekday", "Weekend" )
+trips_data[Month_Name] = FORMAT ( trips_data[Start_Time], "MMMM" )
+
+users_data[Age_Group] =
+    VAR AgeVal = users_data[Age]
+    RETURN
+        SWITCH (
+            TRUE (),
+            ISBLANK ( AgeVal ), "Unknown",
+            AgeVal < 18, "< 18",
+            AgeVal >= 18 && AgeVal <= 29, "18-29",
+            AgeVal >= 30 && AgeVal <= 39, "30-39",
+            AgeVal >= 40 && AgeVal <= 49, "40-49",
+            AgeVal >= 50 && AgeVal <= 59, "50-59",
+            AgeVal >= 60, "60+",
+            "Unknown"
+        )
+
+// As built: Indian seasons. The cities are in the US, so see the README for the fix.
+maintenance_data[Season] =
+    VAR MonthNum = MONTH ( maintenance_data[Maintenance_Date] )
+    RETURN
+        SWITCH (
+            TRUE (),
+            MonthNum IN { 12, 1, 2 }, "Winter",
+            MonthNum IN { 3, 4, 5 }, "Summer",
+            MonthNum IN { 6, 7, 8, 9 }, "Monsoon",
+            MonthNum IN { 10, 11 }, "Post-Monsoon",
+            "Unknown"
+        )

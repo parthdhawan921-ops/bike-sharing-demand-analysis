@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  queries:
+    name: Load data and run every query
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable LOCAL INFILE
+        run: mysql -h 127.0.0.1 -uroot -proot -e "SET GLOBAL local_infile = 1;"
+
+      - name: Run all SQL in order
+        run: ./run_all.sh -h 127.0.0.1 -uroot -proot
+
+      - name: Headline figures match the README
+        run: |
+          out=$(mysql -h 127.0.0.1 -uroot -proot < tests/check_results.sql)
+          if [ -n "$out" ]; then echo "$out"; exit 1; fi
