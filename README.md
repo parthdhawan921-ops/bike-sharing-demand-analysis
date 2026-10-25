@@ -9,7 +9,7 @@ A SQL and Power BI analysis of a bike-sharing service: **50,000 trips, 5,000 rid
 
 **Headline:** weekends look quieter, with 29% of trips, but per day they are slightly busier: 138 trips against 136. The "weekday commute vs weekend leisure" split the case study expects is not in the data. Before reporting it, I tested whether the data could support it and found 72 stations holding more bikes than their capacity, 3,461 trips implying speeds over 40 km/h, and 899 repairs dated before the bike was bought.
 
-**[Interactive case file](https://parthdhawan921-ops.github.io/Parth_Personal/#bike)** · **[📥 Download the Power BI file](powerbi/bike_project_powerbi.pbix)** · **[🎞️ 10-slide presentation](presentation/Bike_Sharing_Demand_Analysis.pptx)** · Case study from the Coding Ninjas Data Analytics course
+**[Interactive case file](https://parthdhawan921-ops.github.io/Parth_Personal/#bike)** · **[📥 Download the Power BI file](powerbi/bike_project_powerbi.pbix)** · **[🎞️ 10-slide presentation](presentation/Bike_Sharing_Demand_Analysis.pdf)** ([PowerPoint](presentation/Bike_Sharing_Demand_Analysis.pptx)) · Case study from the Coding Ninjas Data Analytics course
 
 ![Power BI dashboard, page 1: KPIs, weekday vs weekend, ride types and trips by hour](images/dashboard_page1_overview.png)
 
@@ -148,7 +148,7 @@ Every push runs the full build on MySQL 8.0 in GitHub Actions and checks the hea
 ├── .github/workflows/ci.yml   # Builds the database and runs every query on each push
 ├── data/                      # 7 source CSVs + metadata.md (data dictionary)
 ├── images/                    # Dashboard pages and the demand reality-check chart
-├── presentation/              # 10-slide findings deck (PowerPoint, with speaker notes)
+├── presentation/              # 10-slide findings deck: PDF, and PowerPoint with speaker notes
 ├── powerbi/
 │   ├── bike_project_powerbi.pbix
 │   └── measures.dax           # DAX measures and calculated columns
