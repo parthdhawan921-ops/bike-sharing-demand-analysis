@@ -7,7 +7,9 @@
 
 A SQL and Power BI analysis of a bike-sharing service: **50,000 trips, 5,000 riders, 200 stations and 1,000 bikes across five US cities in 2023**. Seven related tables are loaded into MySQL, checked, cleaned and analysed in 8 SQL scripts, then reported in a 3-page Power BI dashboard.
 
-**Headline:** weekends look quieter, with 29% of trips, but per day they are slightly busier: 138 trips against 136. The "weekday commute vs weekend leisure" split the case study expects is not in the data. Before reporting it, I tested whether the data could support it and found 72 stations holding more bikes than their capacity, 3,461 trips implying speeds over 40 km/h, and 899 repairs dated before the bike was bought.
+- **What I did:** Loaded 7 tables (50,000 trips) into MySQL, checked them with SQL, and built a 3-page Power BI dashboard.
+- **What I found:** **Weekends look quieter in totals, but per day they are busier: 138 trips against 136.** There is no rush hour in this data.
+- **Why it matters:** Plan bikes on per-day demand, not totals. The data also failed reality checks, so I reported its limits instead of a commute story.
 
 **[Interactive case file](https://parthdhawan921-ops.github.io/Parth_Personal/#bike)** · **[📥 Download the Power BI file](powerbi/bike_project_powerbi.pbix)** · **[🎞️ 10-slide presentation](presentation/Bike_Sharing_Demand_Analysis.pdf)** ([PowerPoint](presentation/Bike_Sharing_Demand_Analysis.pptx)) · Case study from the Coding Ninjas Data Analytics course
 
